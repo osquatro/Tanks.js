@@ -1,4 +1,4 @@
-var context, canvas;
+var context; // wee need this to apply in debug functions
 (function () {
     window.requestAnimFrame = (function (callback) {
         return window.requestAnimationFrame
@@ -11,8 +11,7 @@ var context, canvas;
             };
     })();
 
-    canvas = document.getElementById(GameSettings.CanvasId);
-    context = canvas.getContext('2d');
+    context = document.getElementById(GameSettings.CanvasId).getContext('2d');
 
     var controller = new TankController(context);
 
