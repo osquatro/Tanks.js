@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Tank</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/BackgroundProcessor.js" type="text/javascript"></script>
+    <script src="js/config.js" type="text/javascript"></script>
+    <script src="js/tanks.js" type="text/javascript"></script>
+
+</head>
+<body>
+<button id="btnStart">Start</button>
+<button id="btnPause">Pause</button>
+<button id="btnResume">Resume</button>
+<br/>
+<canvas id="canvas1" width="1900" height="900" style="border: 1px solid;"></canvas>
+
+<script type="text/javascript">
+    var context, canvas;	
+    (function () {
+        window.requestAnimFrame = (function (callback) {
+            return window.requestAnimationFrame
+                    || window.webkitRequestAnimationFrame
+                    || window.mozRequestAnimationFrame
+                    || window.oRequestAnimationFrame
+                    || window.msRequestAnimationFrame
+                    || function (callback) {
+                        callback();
+                    };
+        })();
+
+        canvas = document.getElementById(GameSettings.CanvasId);
+        context = canvas.getContext('2d');
+
+        var controller = new TankController(context);
+
+        var processor = new BackgroundProcessor({
+            timeout: GameSettings.fps,
+            currentGameState: null, // {LOADING, PLAY, FINISH}
+            startProcessingCallBack: function () {
+                controller.loadLevel(Level_1);
+                this.currentGameState = GameState.LOADING;
+            },
+            stopConditionCallBack: function () {
+                return this.currentGameState === GameState.FINISH;
+            },
+            workerCallBack: function () {
+                switch (this.currentGameState) {
+                    case GameState.LOADING :
+                        if (controller.isLoadingCompleted()) {
+                            controller.gameCreate();
+                            this.currentGameState = GameState.PLAY;
+                        }
+                        break;
+                    case GameState.PLAY :
+                        requestAnimFrame(function () {
+                            controller.doAction1();
+                        });
+                        break;
+                    default: // do nothing so far
+                        break;
+                }
+            }
+        });
+
+        document.getElementById('btnStart').onclick = function () {
+            processor.start();
+        };
+
+        document.getElementById('btnPause').onclick = function () {
+            processor.interrupt();
+        };
+
+        document.getElementById('btnResume').onclick = function () {
+            processor.resume();
+        };
+    })();
+</script>
+</body>
+</html>
