@@ -1,4 +1,4 @@
-var context; // wee need this to apply in debug functions
+var debug; // wee need this
 (function () {
     window.requestAnimFrame = (function (callback) {
         return window.requestAnimationFrame
@@ -11,8 +11,9 @@ var context; // wee need this to apply in debug functions
             };
     })();
 
-    context = document.getElementById(GameSettings.CanvasId).getContext('2d');
+    var context = document.getElementById(GameSettings.CanvasId).getContext('2d');
 
+    debug = new DebugObj(context);
     var controller = new TankController(context);
 
     var processor = new BackgroundProcessor({

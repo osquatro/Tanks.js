@@ -563,7 +563,7 @@ PlayerTankWidget.prototype.animate = function (controlUnits, animationQueue) {
             this.y = params.y;
             this.angle = params.angle;
         }
-        Debug.tracePoints(this.getShapeCoordinates());
+        debug.tracePoints(this.getShapeCoordinates());
         this.draw();
     }
 };
@@ -726,8 +726,8 @@ MathUtils.detectCollision = function (shape1, shape2) {
                 return false; // NO INTERSECTION
             }
         }
-        //Debug.tracePoints(shape1Coordinates.coordinates);
-        //Debug.tracePoints(shape2Coordinates.coordinates);
+        //debug.tracePoints(shape1Coordinates.coordinates);
+        //debug.tracePoints(shape2Coordinates.coordinates);
 
         return true;
     };
@@ -924,7 +924,7 @@ function CustomNormal(angle) {
     this.p1 = {x: x1, y: y1};
     this.p2 = {x: x2, y: y2};
 
-    //Debug.traceLine([this.p1, this.p2]);
+    //debug.traceLine([this.p1, this.p2]);
 }
 
 CustomNormal.prototype.getProjectionPoint = function (point) {
@@ -962,48 +962,51 @@ CustomNormal.prototype.getProjectionMinMax = function(shape) {
         max: Math.max.apply(null, vertexes)
     };
 };
-/* DEBUG */
 
-Debug = function () {
+
+/* DEBUG */
+var DebugObj = function (context) {
+    this.context = context;
 };
 
-Debug.tracePoints = function (points) {
-    context.save();
-    context.beginPath();
-    context.moveTo(points[0].x, points[0].y);
+DebugObj.prototype.tracePoints = function (points) {
+    this.context.save();
+    this.context.beginPath();
+    this.context.moveTo(points[0].x, points[0].y);
 
     for (var i = 1; i < points.length; i++) {
-        context.lineTo(points[i].x, points[i].y);
+        this.context.lineTo(points[i].x, points[i].y);
     }
-    context.lineTo(points[0].x, points[0].y);
-    context.lineWidth = 1;
+    this.context.lineTo(points[0].x, points[0].y);
+    this.context.lineWidth = 1;
 
     // set line color
-    context.strokeStyle = '#ff0000';
-    context.stroke();
-    context.restore();
+    this.context.strokeStyle = '#ff0000';
+    this.context.stroke();
+    this.context.restore();
 };
 
-Debug.traceLine  = function(points) {
-    context.save();
-    context.beginPath();
-    context.moveTo(points[0].x, points[0].y);
+DebugObj.prototype.traceLine = function (points) {
+    this.context.save();
+    this.context.beginPath();
+    this.context.moveTo(points[0].x, points[0].y);
 
-    context.lineTo(points[1].x, points[1].y);
-    context.lineWidth = 1;
+    this.context.lineTo(points[1].x, points[1].y);
+    this.context.lineWidth = 1;
 
     // set line color
-    context.strokeStyle = '#ffff00';
-    context.stroke();
-    context.restore();
+    this.context.strokeStyle = '#ffff00';
+    this.context.stroke();
+    this.context.restore();
 };
 
-Debug.tracePoint  = function(point, color) {
-    context.beginPath();
-    context.arc(point.x, point.y, 3, 0, 2 * Math.PI, false);
-    context.fillStyle = color;
-    context.fill();
-    context.lineWidth = 1;
-    context.strokeStyle = 'black';
-    context.stroke();
+DebugObj.prototype.tracePoint = function (point, color) {
+    this.context.beginPath();
+    this.context.arc(point.x, point.y, 3, 0, 2 * Math.PI, false);
+    this.context.fillStyle = color;
+    this.context.fill();
+    this.context.lineWidth = 1;
+    this.context.strokeStyle = 'black';
+    this.context.stroke();
 };
+
